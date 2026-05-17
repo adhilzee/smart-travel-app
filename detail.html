@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Travel</title>
+    <link
+      rel="shortcut icon"
+      href="images/icons/icon-48x48.png"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="css/style.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:image" content="" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link rel="manifest" href="manifest.json" />
+  </head>
+  <body>
+    <section class="wrapper">
+      <header>
+        <div class="left">
+          <h1>
+            <a href="./index.html"><img src="images/logo.svg" alt="Image" /></a>
+          </h1>
+        </div>
+        <div class="right">
+          <button class="button" id="install-button">Install</button>
+          <button class="button" onclick="window.location.href = 'smart.html'">
+            Smart Monitoring
+          </button>
+          <button class="button" id="save-post" style="display: block">
+            Save Post
+          </button>
+          <!-- <form>
+            <img src="images/search.svg" alt="Image" />
+            <input type="search" placeholder="Search.." />
+          </form> -->
+        </div>
+      </header>
+      <div class="main"></div>
+    </section>
+
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="js/script.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        let searchParams = new URLSearchParams(window.location.search);
+        if (searchParams.has("id")) {
+          let param = searchParams.get("id");
+          $.ajax({
+            url: `https://traveller.talrop.works/api/v1/places/view/${param}/`,
+            success: function (response) {
+              let place = response.data;
+              let place_html = `<h2>${place.name}</h2>
+                                <img class="main-image" src="${place.image}" alt="" />
+                                <p>
+                                    ${place.description}
+                                </p>
+                                <ul class="gallery-images">`;
+
+              place.gallery.map((image) => {
+                place_html += `<li>
+                                            <img src="${image.image}" alt="" />
+                                        </li>`;
+              });
+              place_html += `</ul>`;
+
+              $("div.main").append(place_html);
+            },
+          });
+        }
+      });
+    </script>
+    <script>
+      let save_post = document.getElementById("save-post");
+      save_post.addEventListener("click", (event) => {
+        if ("caches" in window) {
+          caches.open("save-post").then((cache) => {
+            let searchParams = new URLSearchParams(window.location.search);
+            if (searchParams.has("id")) {
+              let param = searchParams.get("id");
+              cache.add(
+                `https://traveller.talrop.works/api/v1/places/view/${param}/`,
+              );
+              $.ajax({
+                url: `https://traveller.talrop.works/api/v1/places/view/${param}/`,
+                success: function (response) {
+                  let places = response.data;
+                  let images = places.gallery.map((place) => place.image);
+
+                  images.forEach((image) => {
+                    fetch(image, { mode: "no-cors" })
+                      .then((response) => {
+                        if (response) {
+                          return cache.put(image, response);
+                        }
+                        throw new Error("Network response was not ok.");
+                      })
+                      .catch((error) => {
+                        console.error(
+                          `Failed to fetch and cache image (${image}):`,
+                          error,
+                        );
+                      });
+                  });
+                },
+                error: function (error) {
+                  console.error("Error fetching categories:", error);
+                },
+              });
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

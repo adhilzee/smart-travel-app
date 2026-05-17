@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Monitoring</title>
+    <link
+      rel="shortcut icon"
+      href="images/icons/icon-48x48.png"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+
+    <style>
+      body {
+        background: #f5f7fb;
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #222;
+      }
+
+      .card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .card h2 {
+        margin-bottom: 15px;
+        color: rgb(4, 107, 246);
+      }
+
+      .card p {
+        margin: 10px 0;
+        font-size: 16px;
+        color: #444;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1><a href="index.html">Smart Travel Monitoring</a></h1>
+
+    <div class="card" id="weather">Loading weather...</div>
+
+    <div class="card" id="location">Loading location...</div>
+
+    <div class="card" id="crowd">Loading crowd data...</div>
+
+    <script src="js/smart.js"></script>
+  </body>
+</html>
