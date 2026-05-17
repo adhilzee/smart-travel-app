@@ -25,7 +25,9 @@
           </h1>
         </div>
         <div class="right">
-          <button class="button" id="install-button">Install</button>
+          <button class="button" id="install-button" style="display:none">
+  Install
+</button>
           <button class="button" onclick="window.location.href = 'smart.html'">
             Smart Monitoring
           </button>
@@ -46,7 +48,6 @@
 
     <script src="js/jquery-3.7.1.min.js"></script>
     <script src="js/script.js"></script>
-    <script src="js/smart.js"></script>
     <script>
       let save_button = document.getElementById("save-page");
       save_button.addEventListener("click", (event) => {
