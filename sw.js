@@ -1,5 +1,5 @@
 const STATIC_CACHE = "static";
-const DYNAMIC_CACHE = "dynamic-v26";
+const DYNAMIC_CACHE = "dynamic-v27";
 
 self.addEventListener("install", function (event) {
   console.log("Installed", event);
