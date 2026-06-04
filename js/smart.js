@@ -20,14 +20,17 @@ document.getElementById("crowd").innerHTML = `
 <p><strong>Status:</strong> ${crowdStatus}</p>
 `;
 
-// Location
+// Live Location Tracking
 
-navigator.geolocation.getCurrentPosition(
+navigator.geolocation.watchPosition(
+
   (position) => {
 
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
     const accuracy = position.coords.accuracy;
+
+    console.log("Accuracy:", accuracy, "meters");
 
     // Weather
 
@@ -36,6 +39,12 @@ navigator.geolocation.getCurrentPosition(
     )
       .then((response) => response.json())
       .then((data) => {
+
+        if (data.cod && data.cod != 200) {
+          document.getElementById("weather").innerHTML =
+            `<h2>Weather Error</h2><p>${data.message}</p>`;
+          return;
+        }
 
         document.getElementById("weather").innerHTML = `
         <h2>Weather Monitoring</h2>
@@ -88,6 +97,8 @@ navigator.geolocation.getCurrentPosition(
       .then((response) => response.json())
       .then((data) => {
 
+        if (!data.list) return;
+
         const aqi = data.list[0].main.aqi;
 
         let quality = "";
@@ -139,6 +150,9 @@ navigator.geolocation.getCurrentPosition(
         <p><strong>Latitude:</strong> ${lat}</p>
         <p><strong>Longitude:</strong> ${lon}</p>
         <p><strong>Accuracy:</strong> ${accuracy.toFixed(0)} meters</p>
+        <p><strong>Status:</strong> ${
+          accuracy < 50 ? "High Accuracy GPS" : "Approximate Location"
+        }</p>
         `;
       })
       .catch((error) => console.error(error));
@@ -185,7 +199,6 @@ navigator.geolocation.getCurrentPosition(
       <p>You are outside the Tourist Zone.</p>
       `;
     }
-
   },
 
   (error) => {
@@ -201,7 +214,7 @@ navigator.geolocation.getCurrentPosition(
 
   {
     enableHighAccuracy: true,
-    timeout: 10000,
+    timeout: 15000,
     maximumAge: 0
   }
 );
