@@ -1,4 +1,4 @@
-const apiKey = "API_KEY";
+const apiKey = API_KEY;
 
 // Crowd Monitoring
 
