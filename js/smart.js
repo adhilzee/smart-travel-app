@@ -27,6 +27,7 @@ navigator.geolocation.getCurrentPosition(
 
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
+    const accuracy = position.coords.accuracy;
 
     // Weather
 
@@ -34,22 +35,15 @@ navigator.geolocation.getCurrentPosition(
       `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
     )
       .then((response) => response.json())
-
       .then((data) => {
 
         document.getElementById("weather").innerHTML = `
         <h2>Weather Monitoring</h2>
-
         <p><strong>Place:</strong> ${data.name}</p>
-
         <p><strong>Temperature:</strong> ${data.main.temp} °C</p>
-
         <p><strong>Humidity:</strong> ${data.main.humidity}%</p>
-
         <p><strong>Condition:</strong> ${data.weather[0].description}</p>
         `;
-
-        // Smart Alert
 
         let alertMessage = "No Weather Alerts";
 
@@ -65,8 +59,6 @@ navigator.geolocation.getCurrentPosition(
         <h2>Smart Alert System</h2>
         <p>${alertMessage}</p>
         `;
-
-        // Smart Recommendation
 
         let recommendation = "";
 
@@ -85,7 +77,8 @@ navigator.geolocation.getCurrentPosition(
         <h2>AI Travel Recommendation</h2>
         <p>${recommendation}</p>
         `;
-      });
+      })
+      .catch((error) => console.error(error));
 
     // AQI
 
@@ -93,7 +86,6 @@ navigator.geolocation.getCurrentPosition(
       `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`
     )
       .then((response) => response.json())
-
       .then((data) => {
 
         const aqi = data.list[0].main.aqi;
@@ -120,38 +112,36 @@ navigator.geolocation.getCurrentPosition(
 
         document.getElementById("aqi").innerHTML = `
         <h2>Air Quality Monitoring</h2>
-
         <p><strong>AQI:</strong> ${aqi}</p>
-
         <p><strong>Status:</strong> ${quality}</p>
         `;
-      });
+      })
+      .catch((error) => console.error(error));
 
-    // Location
+    // Reverse Geocoding
 
     fetch(
       `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
     )
       .then((response) => response.json())
-
       .then((data) => {
 
         const place =
           data.address.city ||
           data.address.town ||
           data.address.village ||
+          data.address.suburb ||
           "Unknown Location";
 
         document.getElementById("location").innerHTML = `
         <h2>Traveller Location</h2>
-
         <p><strong>Place:</strong> ${place}</p>
-
         <p><strong>Latitude:</strong> ${lat}</p>
-
         <p><strong>Longitude:</strong> ${lon}</p>
+        <p><strong>Accuracy:</strong> ${accuracy.toFixed(0)} meters</p>
         `;
-      });
+      })
+      .catch((error) => console.error(error));
 
     // Geofencing
 
@@ -185,26 +175,33 @@ navigator.geolocation.getCurrentPosition(
     );
 
     if (dist < 5) {
-
       document.getElementById("geofence").innerHTML = `
       <h2>Geofencing Monitor</h2>
       <p>You are inside the Tourist Zone.</p>
       `;
     } else {
-
       document.getElementById("geofence").innerHTML = `
       <h2>Geofencing Monitor</h2>
       <p>You are outside the Tourist Zone.</p>
       `;
     }
+
   },
 
-  () => {
+  (error) => {
 
     document.getElementById("weather").innerHTML =
       "Weather unavailable";
 
     document.getElementById("location").innerHTML =
       "Location access denied";
+
+    console.error(error);
+  },
+
+  {
+    enableHighAccuracy: true,
+    timeout: 10000,
+    maximumAge: 0
   }
 );
