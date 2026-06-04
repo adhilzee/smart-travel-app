@@ -1,4 +1,4 @@
-const apiKey = "YOUR_OPENWEATHER_API_KEY";
+const apiKey = "API_KEY";
 
 // Crowd Monitoring
 
